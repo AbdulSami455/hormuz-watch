@@ -1,0 +1,271 @@
+:root {
+  --bg: #efece6;
+  --paper: #faf8f4;
+  --ink: #1c1b18;
+  --mute: #6d6962;
+  --line: #ddd8ce;
+  --accent: #8b2e1e;
+  --mine: #b8860b;
+  --projectile: #b42318;
+  --drone: #3d6b8c;
+  --attack: #9a4a18;
+  --serif: 'Source Serif 4', 'Iowan Old Style', Georgia, serif;
+  --sans: 'Source Sans 3', 'Segoe UI', sans-serif;
+  font-family: var(--sans);
+  color: var(--ink);
+  background: var(--bg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root,
+.app {
+  margin: 0;
+  height: 100%;
+}
+
+button,
+a {
+  font: inherit;
+  color: inherit;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  grid-template-rows: 52px 1fr;
+  background: var(--bg);
+}
+
+header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+}
+
+h1 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+nav {
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+}
+
+nav button,
+.refresh {
+  border: 0;
+  background: none;
+  color: var(--mute);
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+nav button.on {
+  color: var(--ink);
+  box-shadow: inset 0 -1px 0 var(--ink);
+}
+
+.count {
+  margin-left: auto;
+  color: var(--mute);
+  font-size: 14px;
+}
+
+.refresh:disabled {
+  opacity: 0.45;
+}
+
+main {
+  min-width: 0;
+  border-right: 1px solid var(--line);
+}
+
+.map,
+.leaflet-container {
+  height: 100%;
+  background: #d8d4cc;
+}
+
+.leaflet-control-attribution {
+  background: rgba(250, 248, 244, 0.9) !important;
+  color: var(--mute) !important;
+  font-size: 11px;
+  border: 0;
+}
+
+.leaflet-control-attribution a {
+  color: var(--ink) !important;
+}
+
+.pin-wrap {
+  background: none !important;
+  border: 0 !important;
+}
+
+.pin {
+  display: block;
+  width: 10px;
+  height: 10px;
+  margin: 3px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 0 2px #faf8f4;
+}
+
+.pin.on {
+  width: 12px;
+  height: 12px;
+  margin: 2px;
+  box-shadow: 0 0 0 2px #faf8f4, 0 0 0 3px var(--c);
+}
+
+aside {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--paper);
+}
+
+article,
+.empty {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+article h2 {
+  margin: 0 0 8px;
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.kind {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: var(--mute);
+}
+
+.kind.projectile {
+  color: var(--projectile);
+}
+.kind.mine {
+  color: var(--mine);
+}
+.kind.drone {
+  color: var(--drone);
+}
+.kind.attack {
+  color: var(--attack);
+}
+
+.meta,
+.sum,
+.empty,
+.row small {
+  color: var(--mute);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.meta {
+  margin: 0 0 10px;
+}
+
+.sum {
+  margin: 0 0 12px;
+}
+
+article a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+article a:hover {
+  text-decoration: underline;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+}
+
+.row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 8px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 10px;
+  padding: 12px 20px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.row i {
+  grid-row: 1 / -1;
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--attack);
+}
+
+.row i.projectile {
+  background: var(--projectile);
+}
+.row i.mine {
+  background: var(--mine);
+}
+.row i.drone {
+  background: var(--drone);
+}
+
+.row strong {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.row:hover,
+.row.on {
+  background: #f3efe7;
+}
+
+.row.on strong {
+  color: var(--accent);
+}
+
+@media (max-width: 900px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: 52px 42vh 1fr;
+  }
+  main {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+}
