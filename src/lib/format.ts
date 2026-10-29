@@ -6,6 +6,17 @@ export function ago(date: Date) {
   return `${Math.round(hours / 24)}d`;
 }
 
+const KIND_LABEL: Record<string, string> = {
+  mine: 'Mine',
+  projectile: 'Missile',
+  drone: 'Drone',
+  attack: 'Attack',
+};
+
 export function kindLabel(kind: string) {
-  return kind[0].toUpperCase() + kind.slice(1);
+  return KIND_LABEL[kind] ?? kind[0].toUpperCase() + kind.slice(1);
+}
+
+export function stamp(date: Date) {
+  return date.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 }

@@ -52,7 +52,7 @@ function jitter(lat: number, lon: number, seed: string) {
   let h = 0;
   for (const ch of seed) h = (h * 33 + ch.charCodeAt(0)) | 0;
   const a = (Math.abs(h) % 360) * (Math.PI / 180);
-  const d = 0.035 + (Math.abs(h) % 18) * 0.002;
+  const d = 0.05 + (Math.abs(h) % 24) * 0.004;
   return { lat: lat + Math.sin(a) * d, lon: lon + Math.cos(a) * d };
 }
 

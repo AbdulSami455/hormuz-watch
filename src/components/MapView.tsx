@@ -3,11 +3,11 @@ import L from 'leaflet';
 import { HORMUZ } from '../data/places';
 import type { Incident } from '../lib/incidents';
 
-const KIND_COLOR: Record<Incident['kind'], string> = {
-  mine: '#b8860b',
-  projectile: '#b42318',
-  drone: '#3d6b8c',
-  attack: '#9a4a18',
+export const KIND_COLOR: Record<Incident['kind'], string> = {
+  mine: '#f5b83d',
+  projectile: '#ff4d4f',
+  drone: '#4cc9f0',
+  attack: '#ff8a3d',
 };
 
 interface Props {
@@ -19,9 +19,9 @@ interface Props {
 function icon(kind: Incident['kind'], hot: boolean) {
   return L.divIcon({
     className: 'pin-wrap',
-    iconSize: [16, 16],
-    iconAnchor: [8, 8],
-    html: `<span class="pin${hot ? ' on' : ''}" style="--c:${KIND_COLOR[kind]}"></span>`,
+    iconSize: [44, 44],
+    iconAnchor: [22, 22],
+    html: `<span class="pin${hot ? ' on' : ''}" style="--c:${KIND_COLOR[kind]}"><b></b><b></b><i></i></span>`,
   });
 }
 
@@ -32,6 +32,8 @@ export const MapView = memo(function MapView({ incidents, activeId, onSelect }: 
   const first = useRef(true);
   const onSelectRef = useRef(onSelect);
   onSelectRef.current = onSelect;
+  const incidentsRef = useRef(incidents);
+  incidentsRef.current = incidents;
 
   useEffect(() => {
     if (!root.current || mapRef.current) return;
@@ -40,11 +42,19 @@ export const MapView = memo(function MapView({ incidents, activeId, onSelect }: 
       zoom: 7,
       zoomControl: false,
       attributionControl: false,
+      zoomSnap: 0.25,
     });
-    L.control.attribution({ prefix: false }).addTo(map);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    L.control.attribution({ prefix: false, position: 'bottomleft' }).addTo(map);
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+    const esri = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas';
+    L.tileLayer(`${esri}/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}`, {
+      maxZoom: 16,
+      attribution: 'Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors',
+    }).addTo(map);
+    L.tileLayer(`${esri}/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}`, { maxZoom: 16 }).addTo(map);
+    L.marker([26.1, 54.9], {
+      interactive: false,
+      icon: L.divIcon({ className: 'sea-label', html: 'Strait of Hormuz', iconSize: [160, 20] }),
     }).addTo(map);
     mapRef.current = map;
     return () => {
@@ -66,7 +76,7 @@ export const MapView = memo(function MapView({ incidents, activeId, onSelect }: 
     for (const item of incidents) {
       let marker = marks.current.get(item.id);
       if (!marker) {
-        marker = L.marker([item.lat, item.lon]);
+        marker = L.marker([item.lat, item.lon], { title: item.title });
         marker.on('click', () => onSelectRef.current(item.id));
         marker.addTo(map);
         marks.current.set(item.id, marker);
@@ -83,12 +93,10 @@ export const MapView = memo(function MapView({ incidents, activeId, onSelect }: 
       first.current = false;
       return;
     }
-    const item = incidents.find((i) => i.id === activeId);
+    const item = incidentsRef.current.find((i) => i.id === activeId);
     if (!item) return;
-    if (!map.getBounds().contains([item.lat, item.lon])) {
-      map.panTo([item.lat, item.lon], { animate: false });
-    }
-  }, [activeId, incidents]);
+    map.flyTo([item.lat, item.lon], Math.max(map.getZoom(), 8), { duration: 0.9 });
+  }, [activeId]);
 
   return <div ref={root} className="map" />;
 });
